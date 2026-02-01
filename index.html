@@ -11,13 +11,30 @@
         <div class="header">
             <h1>로또 번호 생성기</h1>
             <button id="theme-toggle">다크 모드</button>
+            <a href="partner.html" class="nav-link">제휴 문의</a>
+            <a href="animal_test.html" class="nav-link">동물상 테스트</a>
         </div>
         <p>버튼을 눌러 행운의 번호를 받아보세요!</p>
         <button id="generateBtn">행운 번호 받기</button>
         <div id="lotto-numbers" class="lotto-numbers-container">
             <!-- 생성된 번호가 여기에 표시됩니다 -->
         </div>
+
+        <div id="disqus_thread" style="margin-top: 40px; text-align: left;"></div>
     </div>
     <script src="script.js"></script>
+    <script>
+        var disqus_config = function () {
+            this.page.url = window.location.href;
+            this.page.identifier = window.location.pathname;
+        };
+        (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://stylish-today.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </body>
 </html>

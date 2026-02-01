@@ -8,6 +8,9 @@
     --button-bg-color: #007bff;
     --button-hover-bg-color: #0056b3;
     --shadow-color: rgba(0, 0, 0, 0.1);
+    --input-bg-color: #f8f9fa;
+    --input-border-color: #dee2e6;
+    --input-text-color: #495057;
 }
 
 body.dark-mode {
@@ -18,6 +21,9 @@ body.dark-mode {
     --button-bg-color: #0056b3;
     --button-hover-bg-color: #003d82;
     --shadow-color: rgba(255, 255, 255, 0.1);
+    --input-bg-color: #2a2a2a;
+    --input-border-color: #444;
+    --input-text-color: #e0e0e0;
 }
 
 body {
@@ -27,8 +33,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 20px 0;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -53,6 +60,7 @@ body {
 h1 {
     color: var(--text-color-primary);
     margin: 0;
+    font-size: 24px;
 }
 
 p {
@@ -60,17 +68,26 @@ p {
     margin-bottom: 30px;
 }
 
-#theme-toggle {
-    background-color: var(--button-bg-color);
-    color: white;
-    border: none;
+#theme-toggle, .nav-link {
+    background-color: transparent;
+    color: var(--text-color-primary);
+    border: 1px solid var(--input-border-color);
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s;
+    text-decoration: none;
+    font-size: 14px;
 }
 
-#generateBtn {
+#theme-toggle:hover, .nav-link:hover {
+    background-color: var(--button-bg-color);
+    color: white;
+    border-color: var(--button-bg-color);
+}
+
+
+#generateBtn, .container button[onclick="init()"] { /* Apply to both generateBtn and the new init button */
     background-color: var(--button-bg-color);
     color: white;
     border: none;
@@ -82,7 +99,7 @@ p {
     margin-bottom: 30px;
 }
 
-#generateBtn:hover, #theme-toggle:hover {
+#generateBtn:hover, .container button[onclick="init()"]:hover {
     background-color: var(--button-hover-bg-color);
 }
 
@@ -105,4 +122,70 @@ p {
     font-size: 20px;
     font-weight: bold;
     box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3);
+}
+
+/* Form Styles */
+.contact-form {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color-secondary);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--input-border-color);
+    background-color: var(--input-bg-color);
+    color: var(--input-text-color);
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.contact-form button {
+    width: 100%;
+    background-color: var(--button-bg-color);
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.contact-form button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+/* Animal Test Page Styles */
+#webcam-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#webcam-container canvas {
+    border: 1px solid var(--input-border-color);
+    border-radius: 5px;
+}
+
+#label-container {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--text-color-primary);
+}
+
+#label-container div {
+    margin-bottom: 5px;
 }
