@@ -11,6 +11,8 @@
     --input-bg-color: #f8f9fa;
     --input-border-color: #dee2e6;
     --input-text-color: #495057;
+    --drop-area-border: #ccc;
+    --drop-area-highlight: #007bff;
 }
 
 body.dark-mode {
@@ -24,6 +26,8 @@ body.dark-mode {
     --input-bg-color: #2a2a2a;
     --input-border-color: #444;
     --input-text-color: #e0e0e0;
+    --drop-area-border: #555;
+    --drop-area-highlight: #0056b3;
 }
 
 body {
@@ -87,7 +91,7 @@ p {
 }
 
 
-#generateBtn, .container button[onclick="init()"] { /* Apply to both generateBtn and the new init button */
+#generateBtn, #predict-button { /* Apply to both generateBtn and the new predict button */
     background-color: var(--button-bg-color);
     color: white;
     border: none;
@@ -96,11 +100,17 @@ p {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 20px; /* Added margin-top for consistency */
     margin-bottom: 30px;
 }
 
-#generateBtn:hover, .container button[onclick="init()"]:hover {
+#generateBtn:hover, #predict-button:hover {
     background-color: var(--button-hover-bg-color);
+}
+
+#predict-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
 .lotto-numbers-container {
@@ -169,23 +179,69 @@ p {
 }
 
 /* Animal Test Page Styles */
-#webcam-container {
-    display: flex;
-    justify-content: center;
+/* Removed #webcam-container and canvas styles */
+
+.drop-area {
+    border: 2px dashed var(--drop-area-border);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
     margin-bottom: 20px;
+    position: relative;
+    min-height: 150px; /* Ensure it's visible */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-#webcam-container canvas {
-    border: 1px solid var(--input-border-color);
+.drop-area.highlight {
+    border-color: var(--drop-area-highlight);
+}
+
+.upload-label {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color-secondary);
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.upload-label p {
+    margin: 0;
+    padding: 10px;
+}
+
+.uploaded-image {
+    max-width: 100%;
+    max-height: 150px; /* Limit preview size */
     border-radius: 5px;
+    margin-top: 10px;
+    display: block; /* Override inline style if needed */
 }
 
 #label-container {
     font-size: 1.2em;
     font-weight: bold;
     color: var(--text-color-primary);
+    margin-top: 20px;
 }
 
 #label-container div {
     margin-bottom: 5px;
+    padding: 8px;
+    background-color: var(--input-bg-color);
+    border-radius: 5px;
+    border: 1px solid var(--input-border-color);
+    text-align: left;
 }

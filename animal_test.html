@@ -19,11 +19,17 @@
         </div>
         <p>이미지를 업로드하여 당신의 얼굴이 강아지상인지 고양이상인지 테스트해보세요!</p>
         
-        <input type="file" id="image-upload" accept="image/*" style="margin-bottom: 20px;">
-        <img id="uploaded-image" style="max-width: 100%; max-height: 200px; margin-top: 20px; display: none;">
-        <button type="button" id="predict-button" disabled style="margin-top: 20px;">테스트 시작</button>
+        <div id="drop-area" class="drop-area">
+            <input type="file" id="image-upload" accept="image/*" hidden>
+            <label for="image-upload" class="upload-label">
+                <p>여기에 이미지를 드래그 앤 드롭하거나 클릭하여 업로드하세요.</p>
+                <img id="uploaded-image" class="uploaded-image" src="#" alt="업로드된 이미지" style="display: none;">
+            </label>
+        </div>
         
-        <div id="label-container" style="margin-top: 20px;"></div>
+        <button type="button" id="predict-button" disabled>테스트 시작</button>
+        
+        <div id="label-container"></div>
 
         <script type="text/javascript">
             const URL = "https://teachablemachine.withgoogle.com/models/DHHrAOWiO/"; // 사용자 제공 모델 URL
@@ -31,6 +37,8 @@
             let model, labelContainer, maxPredictions;
             const uploadedImage = document.getElementById('uploaded-image');
             const predictButton = document.getElementById('predict-button');
+            const dropArea = document.getElementById('drop-area');
+            const imageUploadInput = document.getElementById('image-upload');
 
             // 모델 로드 및 초기 설정
             async function init() {
@@ -47,22 +55,46 @@
                 }
             }
 
-            // 파일 업로드 처리
-            document.getElementById('image-upload').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
+            // 파일 처리 함수
+            function handleFiles(files) {
+                const file = files[0];
+                if (file && file.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         uploadedImage.src = e.target.result;
                         uploadedImage.style.display = 'block';
                         predictButton.disabled = false; // 이미지 로드 후 예측 버튼 활성화
+                        labelContainer.innerHTML = ''; // 이전 예측 결과 초기화
                     };
                     reader.readAsDataURL(file);
                 } else {
                     uploadedImage.style.display = 'none';
                     uploadedImage.src = '';
                     predictButton.disabled = true; // 파일 없으면 버튼 비활성화
+                    labelContainer.innerHTML = '';
+                    alert('이미지 파일만 업로드할 수 있습니다.');
                 }
+            }
+
+            // 드래그 앤 드롭 이벤트 처리
+            dropArea.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                dropArea.classList.add('highlight');
+            });
+
+            dropArea.addEventListener('dragleave', (event) => {
+                dropArea.classList.remove('highlight');
+            });
+
+            dropArea.addEventListener('drop', (event) => {
+                event.preventDefault();
+                dropArea.classList.remove('highlight');
+                handleFiles(event.dataTransfer.files);
+            });
+
+            // 파일 입력 변경 이벤트 처리
+            imageUploadInput.addEventListener('change', (event) => {
+                handleFiles(event.target.files);
             });
 
             // 예측 버튼 클릭 시 예측 수행
@@ -70,10 +102,9 @@
 
             // 이미지 예측 함수
             async function predict() {
-                if (uploadedImage.src) {
+                if (uploadedImage.src && uploadedImage.style.display !== 'none') {
                     const prediction = await model.predict(uploadedImage);
                     
-                    // Clear previous predictions and re-create divs for current prediction
                     labelContainer.innerHTML = ''; 
                     for (let i = 0; i < maxPredictions; i++) {
                         labelContainer.appendChild(document.createElement("div"));
@@ -84,6 +115,8 @@
                             prediction[i].className + ": " + (prediction[i].probability * 100).toFixed(0) + "%";
                         labelContainer.children[i].innerHTML = classPrediction;
                     }
+                } else {
+                    alert('먼저 이미지를 업로드해주세요.');
                 }
             }
 
