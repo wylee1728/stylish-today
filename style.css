@@ -1,37 +1,77 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
+:root {
+    --bg-color: #f0f2f5;
+    --container-bg-color: #ffffff;
+    --text-color-primary: #333;
+    --text-color-secondary: #666;
+    --button-bg-color: #007bff;
+    --button-hover-bg-color: #0056b3;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --container-bg-color: #1e1e1e;
+    --text-color-primary: #e0e0e0;
+    --text-color-secondary: #b0b0b0;
+    --button-bg-color: #0056b3;
+    --button-hover-bg-color: #003d82;
+    --shadow-color: rgba(255, 255, 255, 0.1);
+}
+
 body {
     font-family: 'Nanum Gothic', sans-serif;
-    background-color: #f0f2f5;
+    background-color: var(--bg-color);
+    color: var(--text-color-primary);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
-    background-color: #ffffff;
+    background-color: var(--container-bg-color);
     padding: 30px 40px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px var(--shadow-color);
     text-align: center;
     width: 90%;
     max-width: 500px;
+    transition: background-color 0.3s;
 }
 
-h1 {
-    color: #333;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
 }
 
+h1 {
+    color: var(--text-color-primary);
+    margin: 0;
+}
+
 p {
-    color: #666;
+    color: var(--text-color-secondary);
     margin-bottom: 30px;
 }
 
+#theme-toggle {
+    background-color: var(--button-bg-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
 #generateBtn {
-    background-color: #007bff;
+    background-color: var(--button-bg-color);
     color: white;
     border: none;
     padding: 15px 30px;
@@ -42,8 +82,8 @@ p {
     margin-bottom: 30px;
 }
 
-#generateBtn:hover {
-    background-color: #0056b3;
+#generateBtn:hover, #theme-toggle:hover {
+    background-color: var(--button-hover-bg-color);
 }
 
 .lotto-numbers-container {
