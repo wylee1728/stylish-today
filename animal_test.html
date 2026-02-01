@@ -53,14 +53,12 @@
                         uploadedImage.src = e.target.result;
                         uploadedImage.style.display = 'block';
                         predictButton.disabled = false; // 이미지 로드 후 예측 버튼 활성화
-                        labelContainer.innerHTML = ''; // 이전 예측 결과 초기화
                     };
                     reader.readAsDataURL(file);
                 } else {
                     uploadedImage.style.display = 'none';
                     uploadedImage.src = '';
                     predictButton.disabled = true; // 파일 없으면 버튼 비활성화
-                    labelContainer.innerHTML = '';
                 }
             });
 
@@ -71,6 +69,13 @@
             async function predict() {
                 if (uploadedImage.src) {
                     const prediction = await model.predict(uploadedImage);
+                    
+                    // Clear previous predictions and re-create divs for current prediction
+                    labelContainer.innerHTML = ''; 
+                    for (let i = 0; i < maxPredictions; i++) {
+                        labelContainer.appendChild(document.createElement("div"));
+                    }
+
                     for (let i = 0; i < maxPredictions; i++) {
                         const classPrediction =
                             prediction[i].className + ": " + (prediction[i].probability * 100).toFixed(0) + "%";
