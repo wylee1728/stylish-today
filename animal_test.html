@@ -14,17 +14,22 @@
             <h1>동물상 테스트</h1>
             <a href="index.html" class="nav-link">홈으로</a>
         </div>
-        <p>웹캠을 사용하여 당신의 얼굴이 강아지상인지 고양이상인지 테스트해보세요!</p>
+        <p>이미지를 업로드하여 당신의 얼굴이 강아지상인지 고양이상인지 테스트해보세요!</p>
         
-        <button type="button" onclick="init()">테스트 시작</button>
-        <div id="webcam-container" style="margin-top: 20px;"></div>
-        <div id="label-container" style="margin-top: 10px;"></div>
+        <input type="file" id="image-upload" accept="image/*" style="margin-bottom: 20px;">
+        <img id="uploaded-image" style="max-width: 100%; max-height: 200px; margin-top: 20px; display: none;">
+        <button type="button" id="predict-button" disabled style="margin-top: 20px;">테스트 시작</button>
+        
+        <div id="label-container" style="margin-top: 20px;"></div>
 
         <script type="text/javascript">
             const URL = "https://teachablemachine.withgoogle.com/models/DHHrAOWiO/"; // 사용자 제공 모델 URL
 
-            let model, webcam, labelContainer, maxPredictions;
+            let model, labelContainer, maxPredictions;
+            const uploadedImage = document.getElementById('uploaded-image');
+            const predictButton = document.getElementById('predict-button');
 
+            // 모델 로드 및 초기 설정
             async function init() {
                 const modelURL = URL + "model.json";
                 const metadataURL = URL + "metadata.json";
@@ -32,15 +37,6 @@
                 model = await tmImage.load(modelURL, metadataURL);
                 maxPredictions = model.getTotalClasses();
 
-                const flip = true; // 웹캠 좌우 반전 여부
-                webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-                await webcam.setup(); // 웹캠 접근 요청
-                await webcam.play();
-                window.requestAnimationFrame(loop);
-
-                document.getElementById("webcam-container").innerHTML = ''; // 기존 내용 초기화
-                document.getElementById("webcam-container").appendChild(webcam.canvas);
-                
                 labelContainer = document.getElementById("label-container");
                 labelContainer.innerHTML = ''; // 기존 내용 초기화
                 for (let i = 0; i < maxPredictions; i++) {
@@ -48,20 +44,43 @@
                 }
             }
 
-            async function loop() {
-                webcam.update(); // 웹캠 프레임 업데이트
-                await predict();
-                window.requestAnimationFrame(loop);
-            }
+            // 파일 업로드 처리
+            document.getElementById('image-upload').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedImage.src = e.target.result;
+                        uploadedImage.style.display = 'block';
+                        predictButton.disabled = false; // 이미지 로드 후 예측 버튼 활성화
+                        labelContainer.innerHTML = ''; // 이전 예측 결과 초기화
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    uploadedImage.style.display = 'none';
+                    uploadedImage.src = '';
+                    predictButton.disabled = true; // 파일 없으면 버튼 비활성화
+                    labelContainer.innerHTML = '';
+                }
+            });
 
+            // 예측 버튼 클릭 시 예측 수행
+            predictButton.addEventListener('click', predict);
+
+            // 이미지 예측 함수
             async function predict() {
-                const prediction = await model.predict(webcam.canvas);
-                for (let i = 0; i < maxPredictions; i++) {
-                    const classPrediction =
-                        prediction[i].className + ": " + (prediction[i].probability * 100).toFixed(0) + "%";
-                    labelContainer.childNodes[i].innerHTML = classPrediction;
+                if (uploadedImage.src) {
+                    const prediction = await model.predict(uploadedImage);
+                    for (let i = 0; i < maxPredictions; i++) {
+                        const classPrediction =
+                            prediction[i].className + ": " + (prediction[i].probability * 100).toFixed(0) + "%";
+                        labelContainer.childNodes[i].innerHTML = classPrediction;
+                    }
                 }
             }
+
+            // 페이지 로드 시 모델 초기화
+            window.onload = init;
         </script>
     </div>
 </body>
